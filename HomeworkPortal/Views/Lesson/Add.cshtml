@@ -13,6 +13,11 @@
                 <span class="text-danger" asp-validation-for="Name"></span>
             </div>
             <div class="mb-2">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive"></label>
+                <span class="text-danger" asp-validation-for="IsActive"></span>
+            </div>
+            <div class="mb-2">
                 <input type="submit" value="Save" class="btn btn-primary btn-sm" />
             </div>
         </form>

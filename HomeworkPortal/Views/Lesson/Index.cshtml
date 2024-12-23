@@ -27,6 +27,18 @@
                 <td>@lesson.Id</td>
                 <td>@lesson.Name</td>
                 <td>
+                    @if (lesson.IsActive)
+                    {
+                        <span class="badge bg-success text-white">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger text-white">Pasif</span>
+                    }
+
+
+                </td>
+                <td>
                     <a asp-action="Update" asp-controller="Lesson" class="btn btn-primary btn-sm" asp-route-id="@lesson.Id">Edit</a>
                     <a asp-action="Delete" asp-controller="Lesson" class="btn btn-danger btn-sm" asp-route-id="@lesson.Id">Delete</a>
                 </td>
