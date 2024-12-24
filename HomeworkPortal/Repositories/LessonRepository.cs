@@ -1,4 +1,5 @@
 ﻿using HomeworkPortal.Models;
+using HomeworkPortal.ViewModels;
 
 
 
@@ -13,27 +14,40 @@ namespace HomeworkPortal.Repositories
             _context = context;
         }
 
-        public List<Lesson> GetList()
+        public List<LessonModel> GetList()
         {
-            var lessons = _context.Lessons.ToList();
+            var lessons = _context.Lessons.Select(x => new LessonModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                IsActive = x.IsActive
+            }).ToList();
             return lessons;
         }
 
-        public Lesson GetById(int id)
+        public LessonModel GetById(int id)
         {
-            var lesson = _context.Lessons.Where(s => s.Id == id).FirstOrDefault();
-            return lesson;
+            var lesson = _context.Lessons.Where(s => s.Id == id).Select(x => new LessonModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                IsActive = x.IsActive
+            }).FirstOrDefault(); return lesson;
         }
 
-        public void Add(Lesson model)
+        public void Add(LessonModel model)
         {
-            _context.Lessons.Add(model);
-            _context.SaveChanges();
+            var lesson = new Lesson()
+            {
+                Name = model.Name,
+                IsActive = model.IsActive,
+            };
+            _context.Lessons.Add(lesson); _context.SaveChanges();
         }
 
-        public void Update(Lesson model)
+        public void Update(LessonModel model)
         {
-            var lesson = GetById(model.Id);
+            var lesson  = _context.Lessons.Where(s => s.Id == model.Id).FirstOrDefault();
             if (lesson != null)
             {
                 lesson.Id = model.Id;
@@ -47,7 +61,7 @@ namespace HomeworkPortal.Repositories
 
         public void Delete(int id)
         {
-            var lesson = GetById(id);
+            var lesson = _context.Lessons.Where(s => s.Id == id).FirstOrDefault();
             if (lesson != null)
             {
                 _context.Lessons.Remove(lesson);

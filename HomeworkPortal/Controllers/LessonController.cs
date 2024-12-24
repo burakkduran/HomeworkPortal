@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using HomeworkPortal.Repositories;
 using HomeworkPortal.Models;
+using HomeworkPortal.ViewModels;
 
 namespace HomeworkPortal.Controllers
 {
@@ -25,7 +26,7 @@ namespace HomeworkPortal.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Lesson model)
+        public IActionResult Add(LessonModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -42,7 +43,7 @@ namespace HomeworkPortal.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(Lesson model)
+        public IActionResult Update(LessonModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -59,7 +60,7 @@ namespace HomeworkPortal.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(Lesson model)
+        public IActionResult Delete(LessonModel model)
         {
             _lessonRepository.Delete(model.Id);
             return RedirectToAction("Index");
