@@ -3,6 +3,8 @@ using HomeworkPortal.Repositories;
 using HomeworkPortal.Models;
 using HomeworkPortal.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using AutoMapper;
 
 namespace HomeworkPortal.Controllers
 {
@@ -10,74 +12,92 @@ namespace HomeworkPortal.Controllers
     {
         private readonly LessonRepository _lessonRepository;
         private readonly CategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
+        private readonly INotyfService _notyf;
 
-        public LessonController(LessonRepository lessonRepository, CategoryRepository categoryRepository)
+        public LessonController(LessonRepository lessonRepository, CategoryRepository categoryRepository, IMapper mapper, INotyfService notyf)
         {
             _lessonRepository = lessonRepository;
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
+            _notyf = notyf;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult>Index()
         {
-            var lessons = _lessonRepository.GetList();
-            return View(lessons);
+            var lessons = await _lessonRepository.GetAllAsync();
+            var lessonModels = _mapper.Map<List<LessonModel>>(lessons);
+            return View(lessonModels);
         }
 
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            var categories = _categoryRepository.GetList().Select(x => new SelectListItem()
+            var categories = await _categoryRepository.GetAllAsync();
+            var categoriesSelectList = categories.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString()
             });
-            ViewBag.Categories = categories;
+            ViewBag.Categories = categoriesSelectList;
             return View();
         }
 
         [HttpPost]
-        public IActionResult Add(LessonModel model)
+        public async Task<IActionResult> Add(LessonModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            _lessonRepository.Add(model);
+            var lesson = _mapper.Map<Lesson>(model);
+            await _lessonRepository.AddAsync(lesson);
+            _notyf.Success("Ürün Eklendi...");
+
             return RedirectToAction("Index");
         }
 
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            var categories = _categoryRepository.GetList().Select(x => new SelectListItem()
+            var categories = await _categoryRepository.GetAllAsync();
+            var categoriesSelectList = categories.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString()
             });
-            ViewBag.Categories = categories;
-            var lesson = _lessonRepository.GetById(id);
-            return View(lesson);
+            ViewBag.Categories = categoriesSelectList;
+            var lesson = await _lessonRepository.GetByIdAsync(id);
+            var lessonModel = _mapper.Map<LessonModel>(lesson);
+            return View(lessonModel);
         }
 
         [HttpPost]
-        public IActionResult Update(LessonModel model)
+        public async Task<IActionResult> Update(LessonModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            _lessonRepository.Update(model);
+            var lesson = await _lessonRepository.GetByIdAsync(model.Id);
+            lesson.Name = model.Name;
+            lesson.IsActive = model.IsActive;
+            lesson.CategoryId = model.CategoryId;
+            await _lessonRepository.UpdateAsync(lesson);
+            _notyf.Success("Ürün Güncellendi...");
             return RedirectToAction("Index");
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var lesson = _lessonRepository.GetById(id);
-            return View(lesson);
+            var lesson = await _lessonRepository.GetByIdAsync(id);
+            var lessonModel = _mapper.Map<LessonModel>(lesson);
+            return View(lessonModel);
         }
 
         [HttpPost]
-        public IActionResult Delete(LessonModel model)
+        public async Task<IActionResult> Delete(LessonModel model)
         {
-            _lessonRepository.Delete(model.Id);
+            await _lessonRepository.DeleteAsync(model.Id);
+            _notyf.Success("Ürün Silindi...");
             return RedirectToAction("Index");
         }
     }
