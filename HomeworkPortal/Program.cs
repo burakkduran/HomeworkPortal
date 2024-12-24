@@ -1,6 +1,8 @@
 using HomeworkPortal.Models;
 using HomeworkPortal.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using AutoMapper;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("sqlCon"));
 });
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 
 var app = builder.Build();
 

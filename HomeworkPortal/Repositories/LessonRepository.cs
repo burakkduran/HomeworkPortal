@@ -1,4 +1,5 @@
-﻿using HomeworkPortal.Models;
+﻿using AutoMapper;
+using HomeworkPortal.Models;
 using HomeworkPortal.ViewModels;
 
 
@@ -8,41 +9,34 @@ namespace HomeworkPortal.Repositories
     public class LessonRepository
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public LessonRepository(AppDbContext context)
+
+        public LessonRepository(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public List<LessonModel> GetList()
         {
-            var lessons = _context.Lessons.Select(x => new LessonModel()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                IsActive = x.IsActive
-            }).ToList();
-            return lessons;
+            var lessons = _context.Lessons.ToList();
+            var lessonModels = _mapper.Map<List<LessonModel>>(lessons);
+            return lessonModels;
         }
 
         public LessonModel GetById(int id)
         {
-            var lesson = _context.Lessons.Where(s => s.Id == id).Select(x => new LessonModel()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                IsActive = x.IsActive
-            }).FirstOrDefault(); return lesson;
+            var lesson = _context.Lessons.Where(s => s.Id == id).FirstOrDefault();
+            var lessonModel = _mapper.Map<LessonModel>(lesson);
+            return lessonModel;
         }
 
         public void Add(LessonModel model)
         {
-            var lesson = new Lesson()
-            {
-                Name = model.Name,
-                IsActive = model.IsActive,
-            };
-            _context.Lessons.Add(lesson); _context.SaveChanges();
+            var lesson = _mapper.Map<Lesson>(model);
+            _context.Lessons.Add(lesson); 
+            _context.SaveChanges();
         }
 
         public void Update(LessonModel model)
