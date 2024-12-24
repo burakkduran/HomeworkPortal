@@ -3,11 +3,14 @@ using AutoMapper;
 using HomeworkPortal.Models;
 using HomeworkPortal.Repositories;
 using HomeworkPortal.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace HomeworkPortal.Controllers
 {
+    [Authorize]
+
     public class CategoryController : Controller
     {
         private readonly CategoryRepository _categoryRepository;

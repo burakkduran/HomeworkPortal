@@ -5,9 +5,12 @@ using HomeworkPortal.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HomeworkPortal.Controllers
 {
+    [Authorize]
+
     public class LessonController : Controller
     {
         private readonly LessonRepository _lessonRepository;

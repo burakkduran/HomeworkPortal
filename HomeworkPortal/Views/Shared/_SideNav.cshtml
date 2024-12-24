@@ -27,6 +27,15 @@
             <span>Dersler</span>
         </a>
     </li>
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="User" asp-action="Index">
+                <i class="fas fa-fw fa-user"></i>
+                <span>Üyeler</span>
+            </a>
+        </li>
+    }
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>

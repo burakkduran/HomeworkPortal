@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using AutoMapper;
 using AspNetCoreHero.ToastNotification;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,11 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<LessonRepository>();
 builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped(typeof(GenericRepository<>));
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("sqlCon"));
 });
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddNotyf(config =>
 {
@@ -24,6 +28,17 @@ builder.Services.AddNotyf(config =>
     config.IsDismissable = true;
     config.Position = NotyfPosition.BottomRight;
 });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(opt =>
+    {
+        opt.Cookie.Name = "CookieAuthApp";
+        opt.ExpireTimeSpan = TimeSpan.FromDays(3);
+        opt.LoginPath = "/Home/Login";
+        opt.LogoutPath = "/Home/Logout";
+        opt.AccessDeniedPath = "/Home/AccessDenied";
+        opt.SlidingExpiration = false;
+    });
+
 
 
 var app = builder.Build();
