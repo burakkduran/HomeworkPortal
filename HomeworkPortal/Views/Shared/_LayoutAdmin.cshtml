@@ -106,8 +106,11 @@
                                     @User.Identity.Name
                                 </span>
 
-                                <img class="img-profile rounded-circle"
-                                     src="~/userPhotos/@User.Claims.First(c=>c.Type=="PhotoUrl").Value">
+                                @{
+                                    var photoUrlClaim = User.Claims.FirstOrDefault(c => c.Type == "PhotoUrl");
+                                    var photoUrl = photoUrlClaim != null ? photoUrlClaim.Value : "defaultPhotoUrl.jpg";
+                                }
+                                <img class="img-profile rounded-circle" src="~/userPhotos/@photoUrl">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

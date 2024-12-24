@@ -6,6 +6,9 @@ using AutoMapper;
 using AspNetCoreHero.ToastNotification;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using HomeworkPortal.Localisation;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +17,27 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<LessonRepository>();
 builder.Services.AddScoped<CategoryRepository>();
-builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped(typeof(GenericRepository<>));
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("sqlCon"));
 });
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromHours(2);
+});
+builder.Services.AddIdentity<AppUser, AppRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequireUppercase = true;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
+    options.Lockout.MaxFailedAccessAttempts = 3;
+})
+.AddDefaultTokenProviders()
+.AddErrorDescriber<ErrorDescription>()
+.AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddNotyf(config =>
@@ -28,16 +46,20 @@ builder.Services.AddNotyf(config =>
     config.IsDismissable = true;
     config.Position = NotyfPosition.BottomRight;
 });
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(opt =>
-    {
-        opt.Cookie.Name = "CookieAuthApp";
-        opt.ExpireTimeSpan = TimeSpan.FromDays(3);
-        opt.LoginPath = "/Home/Login";
-        opt.LogoutPath = "/Home/Logout";
-        opt.AccessDeniedPath = "/Home/AccessDenied";
-        opt.SlidingExpiration = false;
-    });
+builder.Services.ConfigureApplicationCookie(opt =>
+{
+var cookiBuilder = new CookieBuilder
+{
+    Name = "IdentyMvcCookie"
+};
+    opt.LoginPath = new PathString("/Home/Login");
+    opt.LogoutPath = new PathString("/Home/Logout");
+    opt.AccessDeniedPath = new PathString("/Home/AccessDenied");
+    opt.Cookie = cookiBuilder;
+    opt.ExpireTimeSpan = TimeSpan.FromDays(15);
+    opt.SlidingExpiration = true;
+});
+
 
 
 
