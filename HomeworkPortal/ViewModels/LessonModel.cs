@@ -12,5 +12,9 @@ namespace HomeworkPortal.ViewModels
 
         [Display(Name = "Aktif")]
         public bool IsActive { get; set; }
+
+        [Display(Name = "Kategori")]
+        [Required(ErrorMessage = "Kategori Giriniz!")]
+        public int CategoryId { get; set; }
     }
 }

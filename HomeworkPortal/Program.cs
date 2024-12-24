@@ -3,6 +3,7 @@ using HomeworkPortal.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using AutoMapper;
+using AspNetCoreHero.ToastNotification;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,11 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<LessonRepository>();
+builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("sqlCon"));
 });
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddNotyf(config =>
+{
+    config.DurationInSeconds = 10;
+    config.IsDismissable = true;
+    config.Position = NotyfPosition.BottomRight;
+});
 
 
 var app = builder.Build();

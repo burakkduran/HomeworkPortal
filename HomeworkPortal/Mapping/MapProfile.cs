@@ -9,6 +9,7 @@ namespace HomeworkPortal.Mapping
         public MapProfile()
         {
             CreateMap<Lesson, LessonModel>().ReverseMap();
+            CreateMap<Category, CategoryModel>().ReverseMap();
         }
     }
 }

@@ -47,6 +47,7 @@ namespace HomeworkPortal.Repositories
                 lesson.Id = model.Id;
                 lesson.Name = model.Name;
                 lesson.IsActive = model.IsActive;
+                lesson.CategoryId = model.CategoryId;
 
                 _context.Lessons.Update(lesson);
                 _context.SaveChanges();
