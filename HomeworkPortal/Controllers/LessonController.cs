@@ -50,8 +50,10 @@ namespace HomeworkPortal.Controllers
                 return View(model);
             }
             var lesson = _mapper.Map<Lesson>(model);
+            lesson.Created = DateTime.Now;
+            lesson.Updated = DateTime.Now;
             await _lessonRepository.AddAsync(lesson);
-            _notyf.Success("Ürün Eklendi...");
+            _notyf.Success("Ders Eklendi...");
 
             return RedirectToAction("Index");
         }
@@ -81,8 +83,9 @@ namespace HomeworkPortal.Controllers
             lesson.Name = model.Name;
             lesson.IsActive = model.IsActive;
             lesson.CategoryId = model.CategoryId;
+            lesson.Updated = DateTime.Now;
             await _lessonRepository.UpdateAsync(lesson);
-            _notyf.Success("Ürün Güncellendi...");
+            _notyf.Success("Ders Güncellendi...");
             return RedirectToAction("Index");
         }
 
@@ -97,7 +100,7 @@ namespace HomeworkPortal.Controllers
         public async Task<IActionResult> Delete(LessonModel model)
         {
             await _lessonRepository.DeleteAsync(model.Id);
-            _notyf.Success("Ürün Silindi...");
+            _notyf.Success("Ders Silindi...");
             return RedirectToAction("Index");
         }
     }
