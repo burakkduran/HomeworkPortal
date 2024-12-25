@@ -49,7 +49,7 @@ namespace HomeworkPortal.Controllers
             category.Created = DateTime.Now;
             category.Updated = DateTime.Now;
             await _categoryRepository.AddAsync(category);
-            _notyf.Success("Kategori Eklendi...");
+            _notyf.Success("Sınıf Eklendi...");
             return RedirectToAction("Index");
         }
 
@@ -73,7 +73,7 @@ namespace HomeworkPortal.Controllers
             category.IsActive = model.IsActive;
             category.Updated = DateTime.Now;
             await _categoryRepository.UpdateAsync(category);
-            _notyf.Success("Kategori Güncellendi...");
+            _notyf.Success("Sınıf Güncellendi...");
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> Delete(int id)
@@ -91,12 +91,12 @@ namespace HomeworkPortal.Controllers
             var lessons = await _lessonRepository.GetAllAsync();
             if (lessons.Count(c => c.CategoryId == model.Id) > 0)
             {
-                _notyf.Error("Üzerinde Ders Kayıtlı Olan Kategori Silinemez!");
+                _notyf.Error("Üzerinde Ders Kayıtlı Olan Sınıf Silinemez!");
                 return RedirectToAction("Index");
             }
 
             await _categoryRepository.DeleteAsync(model.Id);
-            _notyf.Success("Kategori Silindi...");
+            _notyf.Success("Sınıf Silindi...");
             return RedirectToAction("Index");
 
         }

@@ -10,8 +10,8 @@ namespace HomeworkPortal.ViewModels
         public string Name { get; set; }
 
 
-        [Display(Name = "Kategori")]
-        [Required(ErrorMessage = "Kategori Giriniz!")]
+        [Display(Name = "Sınıf")]
+        [Required(ErrorMessage = "Sınıf Giriniz!")]
         public int CategoryId { get; set; }
     }
 }

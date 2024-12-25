@@ -6,7 +6,7 @@ namespace HomeworkPortal.ViewModels
     {
     
         [Display(Name = "Adı")]
-        [Required(ErrorMessage = "Kategori Adı Giriniz!")]
+        [Required(ErrorMessage = "Sınıf Adı Giriniz!")]
         public string Name { get; set; }
 
     }
