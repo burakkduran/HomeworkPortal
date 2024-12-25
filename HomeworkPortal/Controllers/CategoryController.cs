@@ -88,10 +88,10 @@ namespace HomeworkPortal.Controllers
         public async Task<IActionResult> Delete(CategoryModel model)
         {
 
-            var products = await _lessonRepository.GetAllAsync();
-            if (products.Count(c => c.CategoryId == model.Id) > 0)
+            var lessons = await _lessonRepository.GetAllAsync();
+            if (lessons.Count(c => c.CategoryId == model.Id) > 0)
             {
-                _notyf.Error("Üzerinde Ürün Kayıtlı Olan Kategori Silinemez!");
+                _notyf.Error("Üzerinde Ders Kayıtlı Olan Kategori Silinemez!");
                 return RedirectToAction("Index");
             }
 

@@ -15,13 +15,15 @@ namespace HomeworkPortal.Controllers
     {
         private readonly LessonRepository _lessonRepository;
         private readonly CategoryRepository _categoryRepository;
+        private readonly AssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
         private readonly INotyfService _notyf;
 
-        public LessonController(LessonRepository lessonRepository, CategoryRepository categoryRepository, IMapper mapper, INotyfService notyf)
+        public LessonController(LessonRepository lessonRepository, CategoryRepository categoryRepository, IMapper mapper, INotyfService notyf, AssignmentRepository assignmentRepository)
         {
             _lessonRepository = lessonRepository;
             _categoryRepository = categoryRepository;
+            _assignmentRepository = assignmentRepository;
             _mapper = mapper;
             _notyf = notyf;
         }
@@ -102,6 +104,12 @@ namespace HomeworkPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(LessonModel model)
         {
+            var assignments = await _assignmentRepository.GetAllAsync();
+            if (assignments.Count(c => c.LessonId == model.Id) > 0)
+            {
+                _notyf.Error("Üzerinde Ödev Kayıtlı Olan Ders Silinemez!");
+                return RedirectToAction("Index");
+            }
             await _lessonRepository.DeleteAsync(model.Id);
             _notyf.Success("Ders Silindi...");
             return RedirectToAction("Index");

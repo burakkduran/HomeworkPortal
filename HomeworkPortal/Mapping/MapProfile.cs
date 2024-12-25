@@ -10,6 +10,7 @@ namespace HomeworkPortal.Mapping
         {
             CreateMap<Lesson, LessonModel>().ReverseMap();
             CreateMap<Category, CategoryModel>().ReverseMap();
+            CreateMap<Assignment, AssignmentModel>().ReverseMap();
             CreateMap<AppUser, UserModel>().ReverseMap();
             CreateMap<AppUser, RegisterModel>().ReverseMap();
         }

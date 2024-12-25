@@ -1,0 +1,53 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+@model AssignmentModel
+<h2>Ödev Güncelle</h2>
+<div class="row">
+    <div class="col-md-6">
+        <form asp-controller="Assignment" asp-action="Update" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-2">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" />
+                <span class="text-danger" asp-validation-for="Name"></span>
+            </div>
+
+            <div class="mb-2">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span class="text-danger" asp-validation-for="Description"></span>
+            </div>
+
+            <div class="mb-2">
+                <label asp-for="LessonId"></label>
+                <select asp-for="LessonId" class="form-control" asp-items="@ViewBag.Lessons">
+                    <option value="">Seçiniz</option>
+                </select>
+                <span class="text-danger" asp-validation-for="LessonId"></span>
+            </div>
+
+            <div class="mb-2">
+                <label asp-for="DueDate"></label>
+                <input asp-for="DueDate" class="form-control" type="datetime-local" />
+                <span class="text-danger" asp-validation-for="DueDate"></span>
+            </div>
+
+            <div class="mb-2">
+                <input asp-for="IsActive" class="form-check-inline" />
+                <label asp-for="IsActive"></label>
+                <span class="text-danger" asp-validation-for="IsActive"></span>
+            </div>
+
+            <div class="mb-2">
+                <input type="submit" value="Güncelle" class="btn btn-primary btn-sm" />
+                <a asp-action="Index" asp-controller="Assignment" class="btn btn-warning btn-sm">Vazgeç</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

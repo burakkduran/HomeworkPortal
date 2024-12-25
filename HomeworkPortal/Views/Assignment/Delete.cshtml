@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+@model AssignmentModel
+<h2>Ödev Sil</h2>
+
+<div class="alert alert-danger">
+    <h5>Bu ödevi silmek istediğinizden emin misiniz?</h5>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Ödev Adı</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">Açıklama</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3">Teslim Tarihi</dt>
+        <dd class="col-sm-9">@Model.DueDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+        <dt class="col-sm-3">Durum</dt>
+        <dd class="col-sm-9">
+            @if (Model.IsActive)
+            {
+                <span class="badge bg-success">Aktif</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Pasif</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Oluşturulma Tarihi</dt>
+        <dd class="col-sm-9">@Model.Created</dd>
+
+        <dt class="col-sm-3">Son Güncelleme</dt>
+        <dd class="col-sm-9">@Model.Updated</dd>
+    </dl>
+
+    <form asp-action="Delete" asp-controller="Assignment" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Sil" class="btn btn-danger" />
+        <a asp-action="Index" asp-controller="Assignment" class="btn btn-secondary">Vazgeç</a>
+    </form>
+</div>
