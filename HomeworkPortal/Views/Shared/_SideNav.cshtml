@@ -15,15 +15,14 @@
             <span>Ana Sayfa</span>
         </a>
     </li>
+    @if (User.IsInRole("Admin"))
+    {
     <li class="nav-item">
-        <a class="nav-link" asp-controller="Category" asp-action="Index">
+        <a class="nav-link" asp-controller="Grade" asp-action="Index">
             <i class="fas fa-fw fa-laptop-house"></i>
             <span>Sınıflar</span>
         </a>
     </li>
-
-    @if (User.IsInRole("Admin"))
-    {
         <li class="nav-item">
             <a class="nav-link" asp-controller="Lesson" asp-action="Index">
                 <i class="fas fa-fw fa-book"></i>

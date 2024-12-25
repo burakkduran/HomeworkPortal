@@ -9,7 +9,7 @@ namespace HomeworkPortal.Mapping
         public MapProfile()
         {
             CreateMap<Lesson, LessonModel>().ReverseMap();
-            CreateMap<Category, CategoryModel>().ReverseMap();
+            CreateMap<Grade, GradeModel>().ReverseMap();
             CreateMap<Assignment, AssignmentModel>().ReverseMap();
             CreateMap<AppUser, UserModel>().ReverseMap();
             CreateMap<AppUser, RegisterModel>().ReverseMap();

@@ -9,18 +9,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeworkPortal.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
 
-    public class CategoryController : Controller
+    public class GradeController : Controller
     {
-        private readonly CategoryRepository _categoryRepository;
+        private readonly GradeRepository _gradeRepository;
         private readonly LessonRepository _lessonRepository;
         private readonly INotyfService _notyf;
         private readonly IMapper _mapper;
 
-        public CategoryController(CategoryRepository categoryRepository, INotyfService notyf, LessonRepository productRepository, IMapper mapper)
+        public GradeController(GradeRepository gradeRepository, INotyfService notyf, LessonRepository productRepository, IMapper mapper)
         {
-            _categoryRepository = categoryRepository;
+            _gradeRepository = gradeRepository;
             _notyf = notyf;
             _lessonRepository = productRepository;
             _mapper = mapper;
@@ -28,9 +28,9 @@ namespace HomeworkPortal.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var categories = await _categoryRepository.GetAllAsync();
-            var categoryModels = _mapper.Map<List<CategoryModel>>(categories);
-            return View(categoryModels);
+            var categories = await _gradeRepository.GetAllAsync();
+            var gradeModels = _mapper.Map<List<GradeModel>>(categories);
+            return View(gradeModels);
         }
 
         public IActionResult Add()
@@ -39,16 +39,16 @@ namespace HomeworkPortal.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(CategoryModel model)
+        public async Task<IActionResult> Add(GradeModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var category = _mapper.Map<Category>(model);
-            category.Created = DateTime.Now;
-            category.Updated = DateTime.Now;
-            await _categoryRepository.AddAsync(category);
+            var grade = _mapper.Map<Grade>(model);
+            grade.Created = DateTime.Now;
+            grade.Updated = DateTime.Now;
+            await _gradeRepository.AddAsync(grade);
             _notyf.Success("Sınıf Eklendi...");
             return RedirectToAction("Index");
         }
@@ -56,46 +56,46 @@ namespace HomeworkPortal.Controllers
 
         public async Task<IActionResult> Update(int id)
         {
-            var category = await _categoryRepository.GetByIdAsync(id);
-            var categoryModel = _mapper.Map<CategoryModel>(category);
-            return View(categoryModel);
+            var grade = await _gradeRepository.GetByIdAsync(id);
+            var gradeModel = _mapper.Map<GradeModel>(grade);
+            return View(gradeModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(CategoryModel model)
+        public async Task<IActionResult> Update(GradeModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var category = await _categoryRepository.GetByIdAsync(model.Id);
-            category.Name = model.Name;
-            category.IsActive = model.IsActive;
-            category.Updated = DateTime.Now;
-            await _categoryRepository.UpdateAsync(category);
+            var grade = await _gradeRepository.GetByIdAsync(model.Id);
+            grade.Name = model.Name;
+            grade.IsActive = model.IsActive;
+            grade.Updated = DateTime.Now;
+            await _gradeRepository.UpdateAsync(grade);
             _notyf.Success("Sınıf Güncellendi...");
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _categoryRepository.GetByIdAsync(id);
-            var categoryModel = _mapper.Map<CategoryModel>(category);
-            return View(categoryModel);
+            var grade = await _gradeRepository.GetByIdAsync(id);
+            var gradeModel = _mapper.Map<GradeModel>(grade);
+            return View(gradeModel);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Delete(CategoryModel model)
+        public async Task<IActionResult> Delete(GradeModel model)
         {
 
             var lessons = await _lessonRepository.GetAllAsync();
-            if (lessons.Count(c => c.CategoryId == model.Id) > 0)
+            if (lessons.Count(c => c.GradeId == model.Id) > 0)
             {
                 _notyf.Error("Üzerinde Ders Kayıtlı Olan Sınıf Silinemez!");
                 return RedirectToAction("Index");
             }
 
-            await _categoryRepository.DeleteAsync(model.Id);
+            await _gradeRepository.DeleteAsync(model.Id);
             _notyf.Success("Sınıf Silindi...");
             return RedirectToAction("Index");
 

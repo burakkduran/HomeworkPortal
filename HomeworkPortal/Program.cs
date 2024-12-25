@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<LessonRepository>();
-builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<GradeRepository>();
 builder.Services.AddScoped<AssignmentRepository>();
 builder.Services.AddScoped(typeof(GenericRepository<>));
 builder.Services.AddDbContext<AppDbContext>(opt =>

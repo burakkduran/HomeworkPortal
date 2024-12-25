@@ -1,6 +1,6 @@
 ﻿namespace HomeworkPortal.Models
 {
-    public class Category: BaseEntity
+    public class Grade: BaseEntity
     {
         public string Name { get; set; }
 

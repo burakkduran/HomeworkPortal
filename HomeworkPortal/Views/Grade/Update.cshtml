@@ -1,15 +1,16 @@
 ﻿@{
     Layout = "_LayoutAdmin";
 }
-@model CategoryModel
+@model GradeModel
 @section CardHeader {
-    <span>Sınıf Ekle</span>
+    <span>Sınıfı Düzenle</span>
 }
 <div class="row">
     <div class="col-md-4">
-        <form asp-controller="Category" asp-action="Add" method="post">
+        <form asp-controller="Grade" asp-action="Update" method="post">
             <div class="mb-2">
                 <label asp-for="Name"></label>
+                <input asp-for="Id" class="form-control" type="hidden" />
                 <input asp-for="Name" class="form-control" />
                 <span class="text-danger" asp-validation-for="Name"></span>
             </div>

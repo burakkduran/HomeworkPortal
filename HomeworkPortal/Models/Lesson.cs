@@ -3,7 +3,7 @@
     public class Lesson : BaseEntity
     {
         public string? Name { get; set; }
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public int GradeId { get; set; }
+        public Grade Grade { get; set; }
     }
 }

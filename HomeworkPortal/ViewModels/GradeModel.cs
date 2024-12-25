@@ -2,7 +2,7 @@
 
 namespace HomeworkPortal.ViewModels
 {
-    public class CategoryModel : BaseModel
+    public class GradeModel : BaseModel
     {
     
         [Display(Name = "Adı")]

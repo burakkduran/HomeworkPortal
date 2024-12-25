@@ -6,10 +6,10 @@ namespace HomeworkPortal.Models
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>().HasData(
-               new Category() { Id = 1, Name = "Categori 1", IsActive = true },
-               new Category() { Id = 2, Name = "Categori 1", IsActive = true },
-               new Category() { Id = 3, Name = "Categori 2", IsActive = true }
+            modelBuilder.Entity<Grade>().HasData(
+               new Grade() { Id = 1, Name = "Categori 1", IsActive = true },
+               new Grade() { Id = 2, Name = "Categori 1", IsActive = true },
+               new Grade() { Id = 3, Name = "Categori 2", IsActive = true }
 );
 
             modelBuilder.Entity<Lesson>().HasData(

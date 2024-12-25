@@ -7,7 +7,7 @@ namespace HomeworkPortal.Models
     {
 
         public DbSet<Lesson> Lessons { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Grade> Categories { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
 
         public AppDbContext(DbContextOptions options) : base(options)

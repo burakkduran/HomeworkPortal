@@ -9,20 +9,20 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HomeworkPortal.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
 
     public class LessonController : Controller
     {
         private readonly LessonRepository _lessonRepository;
-        private readonly CategoryRepository _categoryRepository;
+        private readonly GradeRepository _gradeRepository;
         private readonly AssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
         private readonly INotyfService _notyf;
 
-        public LessonController(LessonRepository lessonRepository, CategoryRepository categoryRepository, IMapper mapper, INotyfService notyf, AssignmentRepository assignmentRepository)
+        public LessonController(LessonRepository lessonRepository, GradeRepository gradeRepository, IMapper mapper, INotyfService notyf, AssignmentRepository assignmentRepository)
         {
             _lessonRepository = lessonRepository;
-            _categoryRepository = categoryRepository;
+            _gradeRepository = gradeRepository;
             _assignmentRepository = assignmentRepository;
             _mapper = mapper;
             _notyf = notyf;
@@ -37,7 +37,7 @@ namespace HomeworkPortal.Controllers
 
         public async Task<IActionResult> Add()
         {
-            var categories = await _categoryRepository.GetAllAsync();
+            var categories = await _gradeRepository.GetAllAsync();
             var categoriesSelectList = categories.Select(x => new SelectListItem()
             {
                 Text = x.Name,
@@ -65,7 +65,7 @@ namespace HomeworkPortal.Controllers
 
         public async Task<IActionResult> Update(int id)
         {
-            var categories = await _categoryRepository.GetAllAsync();
+            var categories = await _gradeRepository.GetAllAsync();
             var categoriesSelectList = categories.Select(x => new SelectListItem()
             {
                 Text = x.Name,
@@ -87,7 +87,7 @@ namespace HomeworkPortal.Controllers
             var lesson = await _lessonRepository.GetByIdAsync(model.Id);
             lesson.Name = model.Name;
             lesson.IsActive = model.IsActive;
-            lesson.CategoryId = model.CategoryId;
+            lesson.GradeId = model.GradeId;
             lesson.Updated = DateTime.Now;
             await _lessonRepository.UpdateAsync(lesson);
             _notyf.Success("Ders Güncellendi...");

@@ -4,7 +4,7 @@
 @section CardHeader {
     <span>Sınıfı Sil</span>
 }
-@model CategoryModel
+@model GradeModel
 <h4>@Model.Name adlı sınıf silinecektir, Onaylıyor musunuz?</h4>
 <form method="post" asp-action="Delete">
     <input type="hidden" asp-for="Id" />

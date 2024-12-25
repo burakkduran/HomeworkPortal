@@ -12,6 +12,6 @@ namespace HomeworkPortal.ViewModels
 
         [Display(Name = "Sınıf")]
         [Required(ErrorMessage = "Sınıf Giriniz!")]
-        public int CategoryId { get; set; }
+        public int GradeId { get; set; }
     }
 }

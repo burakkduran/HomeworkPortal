@@ -4,9 +4,9 @@ using HomeworkPortal.ViewModels;
 
 namespace HomeworkPortal.Repositories
 {
-    public class CategoryRepository : GenericRepository<Category>
+    public class GradeRepository : GenericRepository<Grade>
     {
-        public CategoryRepository(AppDbContext context) : base(context)
+        public GradeRepository(AppDbContext context) : base(context)
         {
         }
     }
