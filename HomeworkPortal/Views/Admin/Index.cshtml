@@ -5,6 +5,42 @@
 <h1 class="h3 mb-4 text-gray-800">Portal Güncel Durum</h1>
 
 <div class="row">
+     <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            <a asp-controller="Grade" asp-action="Index">Sınıflar</a>
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="GradeCount"></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-school fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <a asp-controller="Lesson" asp-action="Index">Dersler</a>
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="LessonCount"></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chalkboard-teacher fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
@@ -13,7 +49,7 @@
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             <a asp-controller="Assignment" asp-action="Index">Ödevler</a>
                         </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="AssignmentCount">3</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="AssignmentCount"></div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-book-open fa-2x text-gray-300"></i>
@@ -22,12 +58,15 @@
             </div>
         </div>
     </div>
+
 </div>
+
 <div class="row">
     <div class="col-md-6">
         <div id="divResult"></div>
     </div>
 </div>
+
 @section Scripts {
     <script>
         // HUB Bağlantı
@@ -35,7 +74,25 @@
             .withUrl("/general-hub", signalR.HttpTransportType.WebSockets)
             .configureLogging(signalR.LogLevel.Information)
             .build();
-        // Category HUB
+
+
+        connectionHub.start().then(function () {
+            connectionHub.invoke("GetAssignmentCount").then(function (count) {
+                $("#AssignmentCount").html(count);
+            });
+            connectionHub.invoke("GetLessonCount").then(function (count) {
+                $("#LessonCount").html(count);
+            });
+            connectionHub.invoke("GetGradeCount").then(function (count) {
+                $("#GradeCount").html(count);
+            });
+            console.log("Bağlantı Başarılı");
+        }).catch(function () {
+            console.log("Bağlantı Hatalı");
+        });
+
+
+        // Assignment HUB
         connectionHub.on("onAssignmentAdd", (d) => {
             $("#AssignmentCount").html(d);
             $("#divResult")
@@ -63,6 +120,65 @@
                 .html("Ödev Silindi")
                 .fadeOut(5000);
         });
+
+        // Lesson HUB
+        connectionHub.on("onLessonAdd", (d) => {
+            $("#LessonCount").html(d);
+            $("#divResult")
+                .show()
+                .removeClass()
+                .addClass("alert alert-success")
+                .html("Ders Eklendi")
+                .fadeOut(5000);
+        });
+        connectionHub.on("onLessonUpdate", (d) => {
+            $("#LessonCount").html(d);
+            $("#divResult")
+                .show()
+                .removeClass()
+                .addClass("alert alert-success")
+                .html("Ders Güncellendi")
+                .fadeOut(5000);
+        });
+        connectionHub.on("onLessonDelete", (d) => {
+            $("#LessonCount").html(d);
+            $("#divResult")
+                .show()
+                .removeClass()
+                .addClass("alert alert-success")
+                .html("Ders Silindi")
+                .fadeOut(5000);
+        });
+
+        // Grade HUB
+        connectionHub.on("onGradeAdd", (d) => {
+            $("#GradeCount").html(d);
+            $("#divResult")
+                .show()
+                .removeClass()
+                .addClass("alert alert-info")
+                .html("Sınıf Eklendi")
+                .fadeOut(5000);
+        });
+        connectionHub.on("onGradeUpdate", (d) => {
+            $("#GradeCount").html(d);
+            $("#divResult")
+                .show()
+                .removeClass()
+                .addClass("alert alert-info")
+                .html("Sınıf Güncellendi")
+                .fadeOut(5000);
+        });
+        connectionHub.on("onGradeDelete", (d) => {
+            $("#GradeCount").html(d);
+            $("#divResult")
+                .show()
+                .removeClass()
+                .addClass("alert alert-info")
+                .html("Sınıf Silindi")
+                .fadeOut(5000);
+        });
+
         // start connection
         function fullfilled() {
             console.log("Bağlantı Başarılı");

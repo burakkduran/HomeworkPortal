@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using HomeworkPortal.Hubs;
 
 namespace HomeworkPortal.Controllers
 {
@@ -18,17 +20,19 @@ namespace HomeworkPortal.Controllers
         private readonly AssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
         private readonly INotyfService _notyf;
+        private readonly IHubContext<GeneralHub> _generalHub;
 
-        public LessonController(LessonRepository lessonRepository, GradeRepository gradeRepository, IMapper mapper, INotyfService notyf, AssignmentRepository assignmentRepository)
+        public LessonController(LessonRepository lessonRepository, GradeRepository gradeRepository, IMapper mapper, INotyfService notyf, AssignmentRepository assignmentRepository, IHubContext<GeneralHub> generalHub)
         {
             _lessonRepository = lessonRepository;
             _gradeRepository = gradeRepository;
             _assignmentRepository = assignmentRepository;
             _mapper = mapper;
             _notyf = notyf;
+            _generalHub = generalHub;
         }
 
-        public async Task<IActionResult>Index()
+        public async Task<IActionResult> Index()
         {
             var lessons = await _lessonRepository.GetAllAsync();
             var lessonModels = _mapper.Map<List<LessonModel>>(lessons);
@@ -58,6 +62,8 @@ namespace HomeworkPortal.Controllers
             lesson.Created = DateTime.Now;
             lesson.Updated = DateTime.Now;
             await _lessonRepository.AddAsync(lesson);
+            int lessonCount = _lessonRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onLessonAdd", lessonCount);
             _notyf.Success("Ders Eklendi...");
 
             return RedirectToAction("Index");
@@ -90,6 +96,8 @@ namespace HomeworkPortal.Controllers
             lesson.GradeId = model.GradeId;
             lesson.Updated = DateTime.Now;
             await _lessonRepository.UpdateAsync(lesson);
+            int lessonCount = _lessonRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onLessonUpdate", lessonCount);
             _notyf.Success("Ders Güncellendi...");
             return RedirectToAction("Index");
         }
@@ -111,6 +119,8 @@ namespace HomeworkPortal.Controllers
                 return RedirectToAction("Index");
             }
             await _lessonRepository.DeleteAsync(model.Id);
+            int lessonCount = _lessonRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onLessonDelete", lessonCount);
             _notyf.Success("Ders Silindi...");
             return RedirectToAction("Index");
         }

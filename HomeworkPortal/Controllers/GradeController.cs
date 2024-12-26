@@ -5,25 +5,32 @@ using HomeworkPortal.Repositories;
 using HomeworkPortal.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.SignalR;
+using HomeworkPortal.Hubs;
 
 namespace HomeworkPortal.Controllers
 {
     [Authorize(Roles = "Admin")]
-
     public class GradeController : Controller
     {
         private readonly GradeRepository _gradeRepository;
         private readonly LessonRepository _lessonRepository;
         private readonly INotyfService _notyf;
         private readonly IMapper _mapper;
+        private readonly IHubContext<GeneralHub> _generalHub;
 
-        public GradeController(GradeRepository gradeRepository, INotyfService notyf, LessonRepository productRepository, IMapper mapper)
+        public GradeController(
+            GradeRepository gradeRepository,
+            INotyfService notyf,
+            LessonRepository lessonRepository,
+            IMapper mapper,
+            IHubContext<GeneralHub> generalHub)
         {
             _gradeRepository = gradeRepository;
             _notyf = notyf;
-            _lessonRepository = productRepository;
+            _lessonRepository = lessonRepository;
             _mapper = mapper;
+            _generalHub = generalHub;
         }
 
         public async Task<IActionResult> Index()
@@ -49,6 +56,8 @@ namespace HomeworkPortal.Controllers
             grade.Created = DateTime.Now;
             grade.Updated = DateTime.Now;
             await _gradeRepository.AddAsync(grade);
+            int gradeCount = _gradeRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onGradeAdd", gradeCount);
             _notyf.Success("Sınıf Eklendi...");
             return RedirectToAction("Index");
         }
@@ -73,6 +82,8 @@ namespace HomeworkPortal.Controllers
             grade.IsActive = model.IsActive;
             grade.Updated = DateTime.Now;
             await _gradeRepository.UpdateAsync(grade);
+            int gradeCount = _gradeRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onGradeUpdate", gradeCount);
             _notyf.Success("Sınıf Güncellendi...");
             return RedirectToAction("Index");
         }
@@ -87,7 +98,6 @@ namespace HomeworkPortal.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(GradeModel model)
         {
-
             var lessons = await _lessonRepository.GetAllAsync();
             if (lessons.Count(c => c.GradeId == model.Id) > 0)
             {
@@ -96,9 +106,10 @@ namespace HomeworkPortal.Controllers
             }
 
             await _gradeRepository.DeleteAsync(model.Id);
+            int gradeCount = _gradeRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onGradeDelete", gradeCount);
             _notyf.Success("Sınıf Silindi...");
             return RedirectToAction("Index");
-
         }
     }
 }
