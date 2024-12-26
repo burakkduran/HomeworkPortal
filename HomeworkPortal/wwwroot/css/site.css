@@ -1,22 +1,122 @@
-html {
-  font-size: 14px;
+/* Custom Styles */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
 }
 
-@media (min-width: 768px) {
-  html {
+html {
     font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+/* Navbar Styles */
+.navbar {
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+/* Hero Section Styles */
+.jumbotron {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    padding: 6rem 0;
+    margin-bottom: 0;
+}
+
+/* Card Styles */
+.card {
+    transition: transform 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+/* Feature Icons */
+.fa-3x {
+    color: var(--primary-color);
+}
+
+/* Stats Section */
+.display-4 {
+    font-weight: 600;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #343a40;
+}
+
+    footer a:hover {
+        text-decoration: none;
+        opacity: 0.8;
+    }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 4rem 0;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+}
+
+.btn-lg {
+    padding: 0.75rem 2rem;
+}
+
+/* Shadow Effects */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+/* Custom Spacing */
+.section-padding {
+    padding: 5rem 0;
+}
+
+/* Image Styles */
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.navbar-nav {
+    margin-left: 600px;
+}
+
+.hero-logo {
+    margin-left:250px;
+    font-size:200px;
 }
