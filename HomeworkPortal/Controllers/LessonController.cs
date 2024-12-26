@@ -37,13 +37,13 @@ namespace HomeworkPortal.Controllers
 
         public async Task<IActionResult> Add()
         {
-            var categories = await _gradeRepository.GetAllAsync();
-            var categoriesSelectList = categories.Select(x => new SelectListItem()
+            var grades = await _gradeRepository.GetAllAsync();
+            var gradesSelectList = grades.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString()
             });
-            ViewBag.Categories = categoriesSelectList;
+            ViewBag.Grades = gradesSelectList;
             return View();
         }
 
@@ -65,13 +65,13 @@ namespace HomeworkPortal.Controllers
 
         public async Task<IActionResult> Update(int id)
         {
-            var categories = await _gradeRepository.GetAllAsync();
-            var categoriesSelectList = categories.Select(x => new SelectListItem()
+            var grades = await _gradeRepository.GetAllAsync();
+            var gradesSelectList = grades.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString()
             });
-            ViewBag.Categories = categoriesSelectList;
+            ViewBag.Grades = gradesSelectList;
             var lesson = await _lessonRepository.GetByIdAsync(id);
             var lessonModel = _mapper.Map<LessonModel>(lesson);
             return View(lessonModel);

@@ -28,8 +28,8 @@ namespace HomeworkPortal.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var categories = await _gradeRepository.GetAllAsync();
-            var gradeModels = _mapper.Map<List<GradeModel>>(categories);
+            var grades = await _gradeRepository.GetAllAsync();
+            var gradeModels = _mapper.Map<List<GradeModel>>(grades);
             return View(gradeModels);
         }
 
