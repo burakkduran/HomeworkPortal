@@ -5,49 +5,163 @@
 @section CardHeader {
     <span>Ödevler</span>
 }
-<a asp-action="Add" asp-controller="Assignment" class="btn btn-primary btn-sm mb-2">Ekle</a>
-@if (Model.Count == 0)
-{
-    <div class="alert alert-danger col-md-4 mb-2">Henüz hiç bir ödev eklenmedi!</div>
-}
-<table class="table">
-    <thead>
-        <tr>
-            <td>Id</td>
-            <td>Ödev Adı</td>
-            <td>Ders</td>
-            <td>Teslim Tarihi</td>
-            <td>Durum</td>
-            <td>Eklenme</td>
-            <td>Güncellenme</td>
-            <td>İşlemler</td>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var assignment in Model)
-        {
+
+<div id="assignmentList">
+    <button onclick="showAddModal()" class="btn btn-primary btn-sm mb-2">Ekle</button>
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-danger col-md-4 mb-2">Henüz hiç bir ödev eklenmedi!</div>
+    }
+    <table class="table">
+        <thead>
             <tr>
-                <td>@assignment.Id</td>
-                <td>@assignment.Name</td>
-                <td>@assignment.LessonId</td>
-                <td>@assignment.DueDate.ToString("dd/MM/yyyy")</td>
-                <td>
-                    @if (assignment.IsActive)
-                    {
-                        <span class="badge bg-success text-white">Aktif</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger text-white">Pasif</span>
-                    }
-                </td>
-                <td>@assignment.Created</td>
-                <td>@assignment.Updated</td>
-                <td>
-                    <a asp-action="Update" asp-controller="Assignment" class="btn btn-primary btn-sm" asp-route-id="@assignment.Id">Düzenle</a>
-                    <a asp-action="Delete" asp-controller="Assignment" class="btn btn-danger btn-sm" asp-route-id="@assignment.Id">Sil</a>
-                </td>
+                <td>Id</td>
+                <td>Ödev Adı</td>
+                <td>Ders</td>
+                <td>Teslim Tarihi</td>
+                <td>Durum</td>
+                <td>Eklenme</td>
+                <td>Güncellenme</td>
+                <td>İşlemler</td>
             </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in Model)
+            {
+                <tr id="assignment-@assignment.Id">
+                    <td>@assignment.Id</td>
+                    <td>@assignment.Name</td>
+                    <td>@assignment.LessonId</td>
+                    <td>@assignment.DueDate.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (assignment.IsActive)
+                        {
+                            <span class="badge bg-success text-white">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger text-white">Pasif</span>
+                        }
+                    </td>
+                    <td>@assignment.Created</td>
+                    <td>@assignment.Updated</td>
+                    <td>
+                        <a asp-action="Update" asp-controller="Assignment" class="btn btn-primary btn-sm" asp-route-id="@assignment.Id">Düzenle</a>
+                        <a asp-action="Delete" asp-controller="Assignment" class="btn btn-danger btn-sm" asp-route-id="@assignment.Id">Sil</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ödev Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+                    <div class="mb-3">
+                        <label class="form-label">Ödev Adı</label>
+                        <input type="text" class="form-control" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Açıklama</label>
+                        <textarea class="form-control" name="Description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ders</label>
+                        <select class="form-control" name="LessonId" required>
+                            @foreach (var lesson in ViewBag.Lessons)
+                            {
+                                <option value="@lesson.Value">@lesson.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Teslim Tarihi</label>
+                        <input type="date" class="form-control" name="DueDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="IsActive" checked>
+                            <label class="form-check-label">Aktif</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" onclick="submitAssignment()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function showAddModal() {
+            $('#addForm')[0].reset();
+            $('#addModal').modal('show');
         }
-    </tbody>
-</table>
+
+        function submitAssignment() {
+            const form = $('#addForm');
+            const data = {
+                Name: form.find('[name="Name"]').val(),
+                Description: form.find('[name="Description"]').val(),
+                LessonId: form.find('[name="LessonId"]').val(),
+                DueDate: form.find('[name="DueDate"]').val(),
+                IsActive: form.find('[name="IsActive"]').prop('checked')
+            };
+
+            $.ajax({
+                url: '/Assignment/AddAjax',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    if (response.success) {
+                        $('#addModal').modal('hide');
+                        addTableRow(response.id, data);
+                    }
+                },
+                error: function() {
+                    toastr.error('Bir hata oluştu!');
+                }
+            });
+        }
+
+        function addTableRow(id, data) {
+            const newRow = `
+                <tr id="assignment-${id}">
+                    <td>${id}</td>
+                    <td>${data.Name}</td>
+                    <td>${data.LessonId}</td>
+                    <td>${new Date(data.DueDate).toLocaleDateString('tr-TR')}</td>
+                    <td>
+                        ${data.IsActive ? 
+                            '<span class="badge bg-success text-white">Aktif</span>' : 
+                            '<span class="badge bg-danger text-white">Pasif</span>'}
+                    </td>
+                    <td>${new Date().toLocaleString('tr-TR')}</td>
+                    <td>${new Date().toLocaleString('tr-TR')}</td>
+                    <td>
+                        <a href="/Assignment/Update/${id}" class="btn btn-primary btn-sm">Düzenle</a>
+                        <a href="/Assignment/Delete/${id}" class="btn btn-danger btn-sm">Sil</a>
+                    </td>
+                </tr>
+            `;
+            
+            if ($('tbody tr').length === 0) {
+                $('.alert').remove(); // Remove "no assignments" message if exists
+            }
+            
+            $('tbody').append(newRow);
+        }
+    </script>
+}

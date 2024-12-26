@@ -37,33 +37,24 @@ namespace HomeworkPortal.Controllers
         {
             var assignments = await _assignmentRepository.GetAllAsync();
             var assignmentModels = _mapper.Map<List<AssignmentModel>>(assignments);
-            return View(assignmentModels);
-        }
 
-        public async Task<IActionResult> Add()
-        {
             var lessons = await _lessonRepository.GetAllAsync();
-            var lessonsSelectList = lessons.Select(x => new SelectListItem()
+            ViewBag.Lessons = lessons.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString()
             });
-            ViewBag.Lessons = lessonsSelectList;
-            return View();
+
+            return View(assignmentModels);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(AssignmentModel model)
+        public async Task<IActionResult> AddAjax([FromBody] AssignmentModel model)
         {
             if (!ModelState.IsValid)
             {
-                var lessons = await _lessonRepository.GetAllAsync();
-                ViewBag.Lessons = lessons.Select(x => new SelectListItem()
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString()
-                });
-                return View(model);
+                _notyf.Error("Geçersiz veri!");
+                return Json(new { success = false, message = "Geçersiz veri!" });
             }
 
             var assignment = _mapper.Map<Assignment>(model);
@@ -72,8 +63,9 @@ namespace HomeworkPortal.Controllers
             await _assignmentRepository.AddAsync(assignment);
             int assignmentCount = _assignmentRepository.Where(c => c.IsActive == true).Count();
             await _generalHub.Clients.All.SendAsync("onAssignmentAdd", assignmentCount);
-            _notyf.Success("Ödev Eklendi...");
-            return RedirectToAction("Index");
+
+            _notyf.Success("Ödev başarıyla eklendi.");
+            return Json(new { success = true, message = "Ödev başarıyla eklendi.", id = assignment.Id });
         }
 
         public async Task<IActionResult> Update(int id)
