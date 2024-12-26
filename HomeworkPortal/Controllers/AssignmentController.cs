@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using HomeworkPortal.Hubs;
 
 namespace HomeworkPortal.Controllers
 {
@@ -16,16 +18,19 @@ namespace HomeworkPortal.Controllers
         private readonly LessonRepository _lessonRepository;
         private readonly IMapper _mapper;
         private readonly INotyfService _notyf;
+        private readonly IHubContext<GeneralHub> _generalHub;
 
         public AssignmentController(AssignmentRepository assignmentRepository,
             LessonRepository lessonRepository,
             IMapper mapper,
-            INotyfService notyf)
+            INotyfService notyf,
+            IHubContext<GeneralHub> generalHub)
         {
             _assignmentRepository = assignmentRepository;
             _lessonRepository = lessonRepository;
             _mapper = mapper;
             _notyf = notyf;
+            _generalHub = generalHub;
         }
 
         public async Task<IActionResult> Index()
@@ -65,6 +70,8 @@ namespace HomeworkPortal.Controllers
             assignment.Created = DateTime.Now;
             assignment.Updated = DateTime.Now;
             await _assignmentRepository.AddAsync(assignment);
+            int assignmentCount = _assignmentRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onAssignmentAdd", assignmentCount);
             _notyf.Success("Ödev Eklendi...");
             return RedirectToAction("Index");
         }
@@ -107,6 +114,8 @@ namespace HomeworkPortal.Controllers
             assignment.Updated = DateTime.Now;
 
             await _assignmentRepository.UpdateAsync(assignment);
+            int assignmentCount = _assignmentRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onAssignmentUpdate", assignmentCount);
             _notyf.Success("Ödev Güncellendi...");
             return RedirectToAction("Index");
         }
@@ -122,6 +131,8 @@ namespace HomeworkPortal.Controllers
         public async Task<IActionResult> Delete(AssignmentModel model)
         {
             await _assignmentRepository.DeleteAsync(model.Id);
+            int assignmentCount = _assignmentRepository.Where(c => c.IsActive == true).Count();
+            await _generalHub.Clients.All.SendAsync("onAssignmentDelete", assignmentCount);
             _notyf.Success("Ödev Silindi...");
             return RedirectToAction("Index");
         }

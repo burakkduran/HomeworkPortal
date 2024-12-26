@@ -8,6 +8,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using HomeworkPortal.Localisation;
+using HomeworkPortal.Hubs;
 
 
 
@@ -62,7 +63,7 @@ var cookiBuilder = new CookieBuilder
 });
 
 
-
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -84,5 +85,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapHub<GeneralHub>("/general-hub");
 
 app.Run();
