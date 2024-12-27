@@ -19,6 +19,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<LessonRepository>();
 builder.Services.AddScoped<GradeRepository>();
 builder.Services.AddScoped<AssignmentRepository>();
+builder.Services.AddScoped<StudentSubmissionRepository>();
+builder.Services.AddScoped<StudentGradeRepository>();
 builder.Services.AddScoped(typeof(GenericRepository<>));
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {

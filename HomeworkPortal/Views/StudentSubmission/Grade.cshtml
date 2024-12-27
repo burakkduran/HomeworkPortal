@@ -1,0 +1,69 @@
+@model StudentSubmissionModel
+@{
+    ViewData["Title"] = "Ödev Notlandırma";
+}
+
+<div class="container">
+    <h2>Ödev Notlandırma</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">@Model.AssignmentName</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Öğrenci:</strong> @Model.StudentName</p>
+                    <p><strong>Teslim Tarihi:</strong> @Model.SubmissionDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p>
+                        <strong>Durum:</strong>
+                        @switch (Model.Status)
+                        {
+                            case "Submitted":
+                                <span class="badge bg-primary">Teslim Edildi</span>
+                                break;
+                            case "Late":
+                                <span class="badge bg-warning">Geç Teslim</span>
+                                break;
+                            case "Graded":
+                                <span class="badge bg-success">Notlandırıldı</span>
+                                break;
+                        }
+                    </p>
+                    <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">
+                        <i class="fas fa-download"></i> Ödevi İndir
+                    </a>
+                </div>
+            </div>
+
+            <form asp-action="Grade" method="post">
+                <input type="hidden" asp-for="Id" />
+                
+                <div class="mb-3">
+                    <label asp-for="Score" class="form-label"></label>
+                    <input asp-for="Score" class="form-control" type="number" min="0" max="100" step="1" />
+                    <span asp-validation-for="Score" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="TeacherFeedback" class="form-label"></label>
+                    <textarea asp-for="TeacherFeedback" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="TeacherFeedback" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Geri
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} 

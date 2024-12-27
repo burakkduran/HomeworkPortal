@@ -1,0 +1,60 @@
+@model List<StudentSubmissionModel>
+@{
+    ViewData["Title"] = "Ödev Teslimlerim";
+}
+
+<div class="container">
+    <h2>Ödev Teslimlerim</h2>
+    
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Henüz hiç ödev teslimi yapmadınız.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m[0].AssignmentName)</th>
+                    <th>@Html.DisplayNameFor(m => m[0].SubmissionDate)</th>
+                    <th>@Html.DisplayNameFor(m => m[0].Status)</th>
+                    <th>@Html.DisplayNameFor(m => m[0].Score)</th>
+                    <th>@Html.DisplayNameFor(m => m[0].TeacherFeedback)</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var submission in Model)
+                {
+                    <tr>
+                        <td>@submission.AssignmentName</td>
+                        <td>@submission.SubmissionDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            @switch (submission.Status)
+                            {
+                                case "Submitted":
+                                    <span class="badge bg-primary">Teslim Edildi</span>
+                                    break;
+                                case "Late":
+                                    <span class="badge bg-warning">Geç Teslim</span>
+                                    break;
+                                case "Graded":
+                                    <span class="badge bg-success">Notlandırıldı</span>
+                                    break;
+                            }
+                        </td>
+                        <td>@(submission.Score?.ToString() ?? "-")</td>
+                        <td>@(string.IsNullOrEmpty(submission.TeacherFeedback) ? "-" : submission.TeacherFeedback)</td>
+                        <td>
+                            <a asp-action="Download" asp-route-id="@submission.Id" class="btn btn-sm btn-primary">
+                                <i class="fas fa-download"></i> İndir
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div> 

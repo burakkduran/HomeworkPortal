@@ -1,0 +1,71 @@
+@model List<AssignmentViewModel>
+@{
+    ViewData["Title"] = "Ödevlerim";
+}
+
+<div class="container">
+    <h2>Ödevlerim</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Henüz size atanmış ödev bulunmuyor.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var assignment in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">@assignment.Name</h5>
+                            @switch (assignment.Status)
+                            {
+                                case "Submitted":
+                                    <span class="badge bg-primary">Teslim Edildi</span>
+                                    break;
+                                case "Late":
+                                    <span class="badge bg-warning">Geç Teslim</span>
+                                    break;
+                                case "Graded":
+                                    <span class="badge bg-success">Notlandırıldı</span>
+                                    break;
+                                case "Süresi Doldu":
+                                    <span class="badge bg-danger">Süresi Doldu</span>
+                                    break;
+                                default:
+                                    <span class="badge bg-secondary">Teslim Edilmedi</span>
+                                    break;
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">@assignment.LessonName</h6>
+                            <p class="card-text">@assignment.Description</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <strong>Son Teslim:</strong> @assignment.DueDate.ToString("dd/MM/yyyy HH:mm")
+                                </small>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            @if (assignment.Status == "Teslim Edilmedi" && assignment.DueDate > DateTime.Now)
+                            {
+                                <a asp-controller="StudentSubmission" asp-action="Submit" asp-route-assignmentId="@assignment.Id" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-upload"></i> Ödev Yükle
+                                </a>
+                            }
+                            else if (assignment.Status != "Teslim Edilmedi")
+                            {
+                                <a asp-controller="StudentSubmission" asp-action="Index" class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i> Teslimimi Görüntüle
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div> 

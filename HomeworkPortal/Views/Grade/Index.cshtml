@@ -17,7 +17,7 @@
             <th>Durumu</th>
             <th>Eklenme</th>
             <th>Güncellenme</th>
-            <th>Düzenle - Sil</th>
+            <th>İşlemler</th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +41,9 @@
                 <td>
                     <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Düzenle</a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Sil</a>
+                    <a asp-controller="StudentGrade" asp-action="ManageStudents" asp-route-gradeId="@item.Id" class="btn btn-info btn-sm">
+                        <i class="fas fa-users"></i> Öğrenciler
+                    </a>
                 </td>
             </tr>
         }

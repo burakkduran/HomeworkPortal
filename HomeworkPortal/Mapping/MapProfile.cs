@@ -13,6 +13,10 @@ namespace HomeworkPortal.Mapping
             CreateMap<Assignment, AssignmentModel>().ReverseMap();
             CreateMap<AppUser, UserModel>().ReverseMap();
             CreateMap<AppUser, RegisterModel>().ReverseMap();
+            CreateMap<StudentSubmission, StudentSubmissionModel>()
+                .ForMember(dest => dest.AssignmentName, opt => opt.MapFrom(src => src.Assignment.Name))
+                .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src => src.Student.FullName))
+                .ReverseMap();
         }
     }
 }
